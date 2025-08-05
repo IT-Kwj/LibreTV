@@ -52,7 +52,7 @@ async function verifyPassword(password) {
         const isValid = inputHash === correctHash;
 
         if (isValid) {
-            localStorage.setItem(PASSWORD_CONFIG.localStorageKey, JSON.stringify({
+            localStorage.setItem('passwordVerified', JSON.stringify({
                 verified: true,
                 timestamp: Date.now(),
                 passwordHash: correctHash
@@ -70,14 +70,14 @@ function isPasswordVerified() {
     try {
         if (!isPasswordProtected()) return true;
 
-        const stored = localStorage.getItem(PASSWORD_CONFIG.localStorageKey);
+        const stored = localStorage.getItem('passwordVerified');
         if (!stored) return false;
 
         const { timestamp, passwordHash } = JSON.parse(stored);
         const currentHash = window.__ENV__?.PASSWORD;
 
         return timestamp && passwordHash === currentHash &&
-            Date.now() - timestamp < PASSWORD_CONFIG.verificationTTL;
+            Date.now() - timestamp < (90 * 24 * 60 * 60 * 1000);
     } catch (error) {
         console.error('检查密码验证状态时出错:', error);
         return false;
